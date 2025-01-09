@@ -7,6 +7,54 @@
   flex-direction: column;
 }
 
+/* Header del chat */
+.chat-header {
+  display: flex;
+  align-items: center;
+  padding: 10px 30px;
+  background-color: rgb(238, 238, 238);
+  border-bottom: 1px solid #ddd;
+  gap: 5px;
+}
+
+.profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 10px;
+}
+
+.profile-pic img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-name {
+  font-size: 18px;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.703);
+}
+
+.status {
+  display: flex;
+  align-items: center;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  background-color: rgb(2, 235, 2);
+  border-radius: 50%;
+  margin-right: 5px;
+}
+
+.status-text {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.703);
+}
+
 /* CHAT */
 /* Estilos generales */
 body {
@@ -19,7 +67,7 @@ body {
 /* Contenedor del chat siempre visible */
 .chat-container {
   width: 100%;
-  height: 100vh;
+  height: calc(100vh - 60px); /* Ajustar altura para incluir el header */
   border: none;
   background-color: white;
   display: flex;
@@ -91,9 +139,12 @@ body {
   display: inline-block;
 }
 
+.message.user-message {
+  justify-content: flex-end;
+}
+
 .user-message .message-text {
   background-color: rgb(135, 97, 155);
-  text-align: right;
   border-radius: 15px 15px 0 15px;
   margin-left: 10px;
 }

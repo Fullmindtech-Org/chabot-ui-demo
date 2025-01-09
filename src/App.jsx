@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
+import { FaPaperPlane } from 'react-icons/fa';
 import './App.css';
 
 function App() {
@@ -9,6 +10,11 @@ function App() {
 
   const userAvatar = '👨🏻';  // Emoji para el usuario
   const botAvatar = '🤖';   // Emoji para el bot
+
+  const convertToBoldHTML = (text) => {
+    const boldText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    return { __html: boldText };
+  };
 
   // URL del servidor Ollama
   const url = 'http://localhost:11434/api/generate';
@@ -55,13 +61,26 @@ function App() {
 
   return (
     <div className="app-container">
+      {/* Header del chat */}
+      <div className="chat-header">
+        <div className="profile-pic">
+          <img src="https://via.placeholder.com/40" alt="Bot Avatar" />
+        </div>
+        <div className="profile-info">
+          <div className="profile-name">ACINDAR</div>
+          <div className="status">
+            <span className="status-dot"></span>
+            <span className="status-text">En línea</span>
+          </div>
+        </div>
+      </div>
       {/* Contenedor del chat */}
       <div className="chat-container">
         <div className="chat-box" ref={chatBoxRef}>
           {messages.map((msg, index) => (
             <div key={index} className={`message ${msg.sender}-message`}>
               <div className="avatar">{msg.sender === 'user' ? userAvatar : botAvatar}</div>
-              <div className="message-text">{msg.text}</div>
+              <div className="message-text" dangerouslySetInnerHTML={convertToBoldHTML(msg.text)}></div>
             </div>
           ))}
         </div>
@@ -73,7 +92,9 @@ function App() {
             onKeyDown={handleKeyDown}
             placeholder="Escribe un mensaje..."
           />
-          <button onClick={sendMessage}>Enviar</button>
+          <button onClick={sendMessage}>
+            <FaPaperPlane />
+          </button>
         </div>
       </div>
     </div>
