@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import axios from 'axios';
 import './App.css';
 
 function App() {
@@ -11,6 +12,8 @@ function App() {
   const userAvatar = '👨🏻';  // Emoji para el usuario
   const botAvatar = '🤖';   // Emoji para el bot
 
+  // URL del servidor Ollama
+  const url = 'http://localhost:11434/api/generate';
   // Función para manejar el envío de mensajes
   const sendMessage = () => {
     if (input.trim() === '') return;
@@ -19,11 +22,25 @@ function App() {
     setMessages([...messages, newMessage]);
     setInput('');
 
-    // Respuesta automática del "bot"
-    setTimeout(() => {
-      const botMessage = { text: "Hola, ¿cómo puedo ayudarte?", sender: 'bot' };
-      setMessages(prevMessages => [...prevMessages, botMessage]);
-    }, 1000);
+    // Respuesta del "bot"
+    // Configuración de la solicitud
+    axios.post(url, {
+      model: 'demo', // Cambiar nombre al modelo requerido
+      prompt: input,
+      stream: false,
+    }, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => {
+      const botMessage = { text: response.data?.response, sender: "bot"}
+      setMessages(prevMessages => [...prevMessages, botMessage])
+
+    })
+    .catch(error => {
+      console.error('Error en la solicitud:', error);
+    });
   };
 
   // Función para manejar el clic fuera del chat
