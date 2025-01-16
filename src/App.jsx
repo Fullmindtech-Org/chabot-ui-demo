@@ -25,11 +25,16 @@ function App() {
   const sendMessage = () => {
     if (input.trim() === '') return;
 
-    const newMessage = { text: input, sender: 'user' };
-    setMessages([...messages, newMessage]);
+    // Mensaje del usuario
+    const newUserMessage = { text: input, sender: 'user' };
+    setMessages([...messages, newUserMessage]);
     setInput('');
 
-    // Respuesta del "bot"
+    // Mensaje de "Pensando..." del bot
+    const thinkingMessage = { text: "Pensando...", sender: 'bot' };
+    setMessages(prevMessages => [...prevMessages, thinkingMessage]);
+
+    // Respuesta del "bot" (se hace la solicitud axios después)
     axios.post(url, {
       model: 'demo', // Cambiar nombre al modelo requerido
       prompt: input,
@@ -40,11 +45,19 @@ function App() {
       }
     })
     .then(response => {
-      const botMessage = { text: response.data?.response, sender: "bot" }
-      setMessages(prevMessages => [...prevMessages, botMessage])
+      const botMessage = { text: response.data?.response, sender: "bot" };
+      // Actualiza el mensaje de "Pensando..." con la respuesta del bot
+      setMessages(prevMessages => prevMessages.map(msg =>
+        msg.text === "Pensando..." ? botMessage : msg
+      ));
     })
     .catch(error => {
       console.error('Error en la solicitud:', error);
+      // Si hay un error, actualizar el mensaje con un texto de error
+      const errorMessage = { text: "Lo siento, ocurrió un error. Intenta de nuevo.", sender: "bot" };
+      setMessages(prevMessages => prevMessages.map(msg =>
+        msg.text === "Pensando..." ? errorMessage : msg
+      ));
     });
   };
 
@@ -82,9 +95,12 @@ function App() {
         <div className="chat-box" ref={chatBoxRef}>
           {messages.map((msg, index) => (
             <div key={index} className={`message ${msg.sender}-message`}>
-              <div className="avatar">{msg.sender === 'user' ? userAvatar : botAvatar}</div>
-              <div className="message-text" dangerouslySetInnerHTML={convertToBoldHTML(msg.text)}></div>
-            </div>
+            <div className="avatar">{msg.sender === 'user' ? userAvatar : botAvatar}</div>
+            <div
+              className={`message-text ${msg.text === "Pensando..." ? "thinking" : ""}`}
+              dangerouslySetInnerHTML={convertToBoldHTML(msg.text)}
+            ></div>
+          </div>
           ))}
         </div>
         <div className="input-box">
@@ -101,7 +117,7 @@ function App() {
         </div>
       </div>
       {/* Footer del chat */}
-      <footer className="bg-dark py-4 pb-0 footer-custom-background-color footer-custom-text-color">
+      <footer className="bg-dark pb-0 footer-custom-background-color footer-custom-text-color">
       <div className="container-fluid p-0 d-flex flex-wrap align-items-center justify-content-evenly">
         <ul className="order-md-2 col my-3 px-4 d-flex flex-column align-items-center justify-content-center list-unstyled contact-data">
           <li className="my-2">

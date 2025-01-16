@@ -67,7 +67,7 @@ body {
 /* Contenedor del chat siempre visible */
 .chat-container {
   width: 100%;
-  height: calc(100vh - 301px); /* Ajustar altura para incluir el header */
+  height: calc(100vh - 277px); /* Ajustar altura para incluir el header */
   border: none;
   background-color: white;
   display: flex;
@@ -147,6 +147,7 @@ body {
   background-color: rgb(135, 97, 155);
   border-radius: 15px 15px 0 15px;
   margin-left: 10px;
+  color: white !important;
 }
 
 .bot-message .message-text {
@@ -154,6 +155,7 @@ body {
   text-align: left;
   border-radius: 15px 15px 15px 0;
   margin-right: 10px;
+  color: white !important;
 }
 
 /* Footer */
@@ -192,4 +194,12 @@ body {
 
 .background-ws a {
   color: white;
+}
+
+/* Estilo para el mensaje de 'Pensando...' */
+.message.bot-message .message-text.thinking {
+  background-color: #f0ad4e; /* Color amarillo para indicar que está pensando */
+  color: black !important;
+  font-style: italic;
+  text-align: center;
 }
